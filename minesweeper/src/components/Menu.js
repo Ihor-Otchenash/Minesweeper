@@ -1,24 +1,66 @@
-import React from 'react';
+import React, { useContext } from 'react';
+
+import { Context } from './Context';
+
+const gameOptions = {
+  boardSize: {
+    Small: '8',
+    Medium: '10',
+    Big: '12',
+  },
+  difficulty: {
+    Easy: '5',
+    Moderate: '10',
+    Hard: '15',
+  },
+};
+
+const handleSubmit = (e, setIsGameOn) => {
+  e.preventDefault();
+  setIsGameOn(true);
+};
 
 export default function Menu() {
+  const { gameSettings, handleSettingsChange, setIsGameOn } =
+    useContext(Context);
+  const { boardSize, difficulty } = gameSettings;
   return (
-    <form onSubmit={async (e) => e.preventDefault()}>
+    <form onSubmit={(e) => handleSubmit(e, setIsGameOn)}>
       <label htmlFor="boardSize">
         Choose Board Size
-        <select name="boardSize" id="boardSize">
-          <option value="5">Small</option>
-          <option value="7">Medium</option>
-          <option value="10">Big</option>
+        <select
+          name="boardSize"
+          id="boardSize"
+          onChange={handleSettingsChange}
+          value={boardSize}
+        >
+          {Object.entries(gameOptions.boardSize).map(
+            ([sizeName, sizeValue]) => (
+              <option key={sizeName} value={sizeValue}>
+                {sizeName}
+              </option>
+            )
+          )}
         </select>
       </label>
       <label htmlFor="difficulty">
         Choose Difficulty
-        <select name="diffuculty" id="diffuculty">
-          <option value="5">Easy</option>
-          <option value="10">Medium</option>
-          <option value="15">Hard</option>
+        <select
+          name="difficulty"
+          id="difficulty"
+          onChange={handleSettingsChange}
+          value={difficulty}
+        >
+          {Object.entries(gameOptions.difficulty).map(
+            ([difficultyName, difficultyValue]) => (
+              <option key={difficultyName} value={difficultyValue}>
+                {difficultyName}
+              </option>
+            )
+          )}
         </select>
       </label>
+      <button type="submit">New Game</button>
     </form>
   );
 }

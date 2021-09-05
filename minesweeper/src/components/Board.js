@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import Row from './Row';
 import Cell from './Cell';
+
+import { Context } from './Context';
 
 const BoardStyles = styled.ul`
   background-color: lightblue;
@@ -13,10 +15,10 @@ const BoardStyles = styled.ul`
   flex-direction: column;
 `;
 
-const setMines = (size, board) => {
+const setMines = (size, difficulty, board) => {
   const boardWithMines = [...board];
   // Size of the board 10x10 = 10 mines on the board
-  let mines = size;
+  let mines = difficulty;
 
   // Place mines
   while (mines) {
@@ -32,7 +34,7 @@ const setMines = (size, board) => {
   return boardWithMines;
 };
 
-const buildBoard = (size) => {
+const buildBoard = (size, difficulty) => {
   const emptyBoard = [];
   for (let i = 0; i < size; i++) {
     emptyBoard[i] = [];
@@ -40,17 +42,23 @@ const buildBoard = (size) => {
       emptyBoard[i] = [...emptyBoard[i], 0];
     }
   }
-  const boardWithMines = setMines(size, emptyBoard);
+  const boardWithMines = setMines(size, difficulty, emptyBoard);
 
   return boardWithMines.map((row, rowIndex) => (
     <Row key={rowIndex}>
       {row.map((cell, cellIndex) => (
-        <Cell cell={cell} index={`${rowIndex}${cellIndex}`} />
+        <Cell
+          cell={cell}
+          key={`${rowIndex}${cellIndex}`}
+          position={`${rowIndex},${cellIndex}`}
+        />
       ))}
     </Row>
   ));
 };
 
 export default function Board() {
-  return <BoardStyles>{buildBoard(10)}</BoardStyles>;
+  const { gameSettings } = useContext(Context);
+  const { boardSize, difficulty } = gameSettings;
+  return <BoardStyles>{buildBoard(boardSize, difficulty)}</BoardStyles>;
 }

@@ -1,13 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import Minesweeper from './Minesweeper';
 import reportWebVitals from './reportWebVitals';
+import { ContextProvider } from './components/Context';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <ContextProvider>
+    <React.StrictMode>
+      <Minesweeper />
+    </React.StrictMode>
+  </ContextProvider>,
   document.getElementById('root')
 );
 
