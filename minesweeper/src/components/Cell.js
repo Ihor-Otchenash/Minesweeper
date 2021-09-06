@@ -10,27 +10,44 @@ const StyledCell = styled.div`
 `;
 
 const handleClick = (e, isMine, setIsGameOn, resetGameSettings) => {
+  console.log('Clicked handled?');
   if (isMine) {
     setIsGameOn(false);
     resetGameSettings();
   }
 };
 
-const handleRightClick = (e) => {
+const handleRightClick = (e, setFlagsLeft, setBoard, position) => {
   e.preventDefault();
-  e.target.style.backgroundColor = 'green';
+  const [x, y] = position.split(',');
+  setFlagsLeft((prevState) => {
+    if (prevState - 1 >= 0) {
+      e.target.style.backgroundColor = 'green';
+      setBoard((prevBoard) => {
+        const current = [...prevBoard];
+        // STOPPED HERE, CHANGE LOGIC AND STRUCTURE OF THE CELL -> OBJ
+        current[x][y] = 1;
+        return current;
+      });
+      return prevState - 1;
+    }
+    return prevState;
+  });
 };
 
 export default function Cell({ cell, position }) {
   const isMine = Boolean(cell);
-  const { setIsGameOn, resetGameSettings } = useContext(Context);
+  const { setIsGameOn, resetGameSettings, setFlagsLeft, setBoard } =
+    useContext(Context);
 
   return (
     <StyledCell
       position={position}
       isMine={isMine}
       onClick={(e) => handleClick(e, isMine, setIsGameOn, resetGameSettings)}
-      onContextMenu={handleRightClick}
+      onContextMenu={(e) =>
+        handleRightClick(e, setFlagsLeft, setBoard, position)
+      }
     />
   );
 }
