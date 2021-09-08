@@ -23,7 +23,7 @@ function ContextProvider({ children }) {
     for (let i = 0; i < size; i++) {
       emptyBoard[i] = [];
       for (let j = 0; j < size; j++) {
-        emptyBoard[i] = [...emptyBoard[i], 0];
+        emptyBoard[i] = [...emptyBoard[i], { isMine: false, isFlag: false }];
       }
     }
     return emptyBoard;
@@ -39,12 +39,16 @@ function ContextProvider({ children }) {
       const rowIndex = Math.round(Math.random() * (size - 1));
       const cellIndex = Math.round(Math.random() * (size - 1));
 
-      if (!boardWithMines[rowIndex][cellIndex]) {
-        boardWithMines[rowIndex][cellIndex] = 1;
+      if (!boardWithMines[rowIndex][cellIndex].isMine) {
+        boardWithMines[rowIndex][cellIndex] = {
+          ...boardWithMines[rowIndex][cellIndex],
+          isMine: true,
+        };
+        console.log(boardWithMines[rowIndex][cellIndex]);
         mines -= 1;
       }
     }
-
+    console.log(boardWithMines);
     return boardWithMines;
   };
 
@@ -52,14 +56,33 @@ function ContextProvider({ children }) {
     setGameSettings(defaultGameSettings);
   };
 
+  const placeFlagOnBoard = (x, y) => {
+    setFlagsLeft((prevState) => prevState - 1);
+    setBoard((prevBoard) => {
+      const modifiedBoard = [...prevBoard];
+      modifiedBoard[x][y] = { ...modifiedBoard[x][y], isFlag: true };
+      return modifiedBoard;
+    });
+  };
+
+  const removeFlagOnBoard = (x, y) => {
+    setFlagsLeft((prevState) => prevState + 1);
+    setBoard((prevBoard) => {
+      const modifiedBoard = [...prevBoard];
+      modifiedBoard[x][y] = { ...modifiedBoard[x][y], isFlag: false };
+      return modifiedBoard;
+    });
+  };
+
   useEffect(() => {
-    const { boardSize, difficulty: diffLevel } = gameSettings;
+    const { boardSize, difficulty: difficultyLevel } = gameSettings;
     const boardWithMines = addMinesToBoard(
       boardSize,
-      diffLevel,
+      difficultyLevel,
       createInitialBoard(boardSize)
     );
     setBoard(boardWithMines);
+    setFlagsLeft(difficultyLevel);
   }, [gameSettings]);
 
   return (
@@ -72,6 +95,8 @@ function ContextProvider({ children }) {
         gameSettings,
         flagsLeft,
         setFlagsLeft,
+        placeFlagOnBoard,
+        removeFlagOnBoard,
         handleSettingsChange,
         resetGameSettings,
       }}
