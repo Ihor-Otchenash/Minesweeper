@@ -15,17 +15,14 @@ const BoardStyles = styled.ul`
 const designBoard = (board) =>
   board.map((row, rowIndex) => (
     <Row key={rowIndex}>
-      {row.map((cell, cellIndex) => {
-        console.log(cell);
-        return (
-          <Cell
-            cell={cell}
-            key={`${rowIndex}${cellIndex}`}
-            x={rowIndex}
-            y={cellIndex}
-          />
-        );
-      })}
+      {row.map((cell, cellIndex) => (
+        <Cell
+          cell={cell}
+          key={`${rowIndex}${cellIndex}`}
+          x={rowIndex}
+          y={cellIndex}
+        />
+      ))}
     </Row>
   ));
 

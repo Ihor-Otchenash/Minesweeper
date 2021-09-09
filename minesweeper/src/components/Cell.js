@@ -4,22 +4,35 @@ import { Context } from './Context';
 
 const StyledCell = styled.div`
   border: 1px solid grey;
-  background-color: ${({ isMine, isFlag }) =>
-    isMine
-      ? 'palevioletred'
-      : isFlag
-      ? 'green'
-      : 'white'}; /* Changed logic here, mines will hidden */
+  background-color: ${({ isMine, isFlag, isOpen }) =>
+    (isOpen && 'lightgray') ||
+    (isFlag && 'green') ||
+    (isMine && 'palevioletred') ||
+    'white'}; /* Changed logic here, mines will hidden */
   width: 25px;
   height: 25px;
 `;
 
-const handleClick = (e, isMine, setIsGameOn, resetGameSettings) => {
-  console.log('Clicked handled?');
+const handleClick = (
+  e,
+  board,
+  setIsGameOn,
+  resetGameSettings,
+  openCell,
+  removeFlagOnBoard,
+  x,
+  y
+) => {
+  const { isFlag, isMine } = board[x][y];
   if (isMine) {
     setIsGameOn(false);
     resetGameSettings();
+    return;
   }
+  if (isFlag) {
+    removeFlagOnBoard(x, y);
+  }
+  openCell(x, y);
 };
 
 const handleRightClick = (
@@ -32,18 +45,18 @@ const handleRightClick = (
   y
 ) => {
   e.preventDefault();
-  const { isFlag } = board[x][y];
+  const { isFlag, isOpen } = board[x][y];
   if (isFlag) {
     removeFlagOnBoard(x, y);
     return;
   }
-  if (flagsLeft - 1 >= 0) {
+  if (flagsLeft - 1 >= 0 && !isOpen) {
     placeFlagOnBoard(x, y);
   }
 };
 
 export default function Cell({ cell, x, y }) {
-  const { isMine, isFlag } = cell;
+  const { isMine, isFlag, isOpen } = cell;
   const {
     setIsGameOn,
     resetGameSettings,
@@ -51,13 +64,26 @@ export default function Cell({ cell, x, y }) {
     removeFlagOnBoard,
     placeFlagOnBoard,
     board,
+    openCell,
   } = useContext(Context);
 
   return (
     <StyledCell
       isMine={isMine}
       isFlag={isFlag}
-      onClick={(e) => handleClick(e, isMine, setIsGameOn, resetGameSettings)}
+      isOpen={isOpen}
+      onClick={(e) =>
+        handleClick(
+          e,
+          board,
+          setIsGameOn,
+          resetGameSettings,
+          openCell,
+          removeFlagOnBoard,
+          x,
+          y
+        )
+      }
       onContextMenu={(e) =>
         handleRightClick(
           e,
@@ -69,6 +95,8 @@ export default function Cell({ cell, x, y }) {
           y
         )
       }
-    />
+    >
+      {cell.value}
+    </StyledCell>
   );
 }

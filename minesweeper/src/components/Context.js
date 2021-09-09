@@ -4,6 +4,56 @@ import useSettings from '../helpers/useSettings';
 const Context = createContext();
 
 function ContextProvider({ children }) {
+  const testingBoard = [
+    [
+      { isFlag: false, isMine: true, isOpen: false, value: null },
+      { isFlag: false, isMine: false, isOpen: false, value: null },
+      { isFlag: false, isMine: false, isOpen: false, value: null },
+      { isFlag: false, isMine: false, isOpen: false, value: null },
+      { isFlag: false, isMine: false, isOpen: false, value: null },
+      { isFlag: false, isMine: false, isOpen: false, value: null },
+    ],
+    [
+      { isFlag: false, isMine: false, isOpen: false, value: null },
+      { isFlag: false, isMine: false, isOpen: false, value: null },
+      { isFlag: false, isMine: false, isOpen: false, value: null },
+      { isFlag: false, isMine: false, isOpen: false, value: null },
+      { isFlag: false, isMine: false, isOpen: false, value: null },
+      { isFlag: false, isMine: false, isOpen: false, value: null },
+    ],
+    [
+      { isFlag: false, isMine: false, isOpen: false, value: null },
+      { isFlag: false, isMine: false, isOpen: false, value: null },
+      { isFlag: false, isMine: false, isOpen: false, value: null },
+      { isFlag: false, isMine: false, isOpen: false, value: null },
+      { isFlag: false, isMine: false, isOpen: false, value: null },
+      { isFlag: false, isMine: false, isOpen: false, value: null },
+    ],
+    [
+      { isFlag: false, isMine: false, isOpen: false, value: null },
+      { isFlag: false, isMine: false, isOpen: false, value: null },
+      { isFlag: false, isMine: false, isOpen: false, value: null },
+      { isFlag: false, isMine: false, isOpen: false, value: null },
+      { isFlag: false, isMine: true, isOpen: false, value: null },
+      { isFlag: false, isMine: false, isOpen: false, value: null },
+    ],
+    [
+      { isFlag: false, isMine: false, isOpen: false, value: null },
+      { isFlag: false, isMine: false, isOpen: false, value: null },
+      { isFlag: false, isMine: false, isOpen: false, value: null },
+      { isFlag: false, isMine: true, isOpen: false, value: null },
+      { isFlag: false, isMine: false, isOpen: false, value: null },
+      { isFlag: false, isMine: false, isOpen: false, value: null },
+    ],
+    [
+      { isFlag: false, isMine: false, isOpen: false, value: null },
+      { isFlag: false, isMine: false, isOpen: false, value: null },
+      { isFlag: false, isMine: false, isOpen: false, value: null },
+      { isFlag: false, isMine: false, isOpen: false, value: null },
+      { isFlag: false, isMine: true, isOpen: false, value: null },
+      { isFlag: false, isMine: true, isOpen: false, value: null },
+    ],
+  ];
   const [board, setBoard] = useState([]);
 
   const defaultGameSettings = {
@@ -23,7 +73,10 @@ function ContextProvider({ children }) {
     for (let i = 0; i < size; i++) {
       emptyBoard[i] = [];
       for (let j = 0; j < size; j++) {
-        emptyBoard[i] = [...emptyBoard[i], { isMine: false, isFlag: false }];
+        emptyBoard[i] = [
+          ...emptyBoard[i],
+          { isMine: false, isFlag: false, isOpen: false },
+        ];
       }
     }
     return emptyBoard;
@@ -48,7 +101,6 @@ function ContextProvider({ children }) {
         mines -= 1;
       }
     }
-    console.log(boardWithMines);
     return boardWithMines;
   };
 
@@ -74,6 +126,14 @@ function ContextProvider({ children }) {
     });
   };
 
+  const openCell = (x, y) => {
+    setBoard((prevBoard) => {
+      const modifiedBoard = [...prevBoard];
+      modifiedBoard[x][y] = { ...modifiedBoard[x][y], isOpen: true };
+      return modifiedBoard;
+    });
+  };
+
   useEffect(() => {
     const { boardSize, difficulty: difficultyLevel } = gameSettings;
     const boardWithMines = addMinesToBoard(
@@ -81,7 +141,8 @@ function ContextProvider({ children }) {
       difficultyLevel,
       createInitialBoard(boardSize)
     );
-    setBoard(boardWithMines);
+    // setBoard(boardWithMines);
+    setBoard(testingBoard);
     setFlagsLeft(difficultyLevel);
   }, [gameSettings]);
 
@@ -90,6 +151,7 @@ function ContextProvider({ children }) {
       value={{
         board,
         setBoard,
+        openCell,
         isGameOn,
         setIsGameOn,
         gameSettings,
