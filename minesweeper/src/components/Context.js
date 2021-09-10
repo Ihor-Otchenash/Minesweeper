@@ -162,6 +162,17 @@ function ContextProvider({ children }) {
     });
   };
 
+  const openAdjacentCells = (cellArr, x, y, open) => {
+    for (let dx = x - 1; dx <= x + 1; dx++) {
+      for (let dy = y - 1; dy <= y + 1; dy++) {
+        const cell = cellArr?.[dx]?.[dy];
+        if (cell && !(dx === x && dy === y)) {
+          open(cellArr, dx, dy);
+        }
+      }
+    }
+  };
+
   const openCell = (currentBoard, x, y) => {
     const cell = currentBoard?.[x]?.[y];
     if (!cell) return;
@@ -171,14 +182,7 @@ function ContextProvider({ children }) {
       return;
     }
     cell.isOpen = true;
-    openCell(currentBoard, x - 1, y);
-    openCell(currentBoard, x + 1, y);
-    openCell(currentBoard, x, y - 1);
-    openCell(currentBoard, x, y + 1);
-    openCell(currentBoard, x + 1, y - 1);
-    openCell(currentBoard, x + 1, y + 1);
-    openCell(currentBoard, x - 1, y - 1);
-    openCell(currentBoard, x - 1, y + 1);
+    openAdjacentCells(currentBoard, x, y, openCell);
   };
 
   useEffect(() => {
