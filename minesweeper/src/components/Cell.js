@@ -14,19 +14,16 @@ const StyledCell = styled.div`
   height: 25px;
 `;
 
-const handleClick = (
-  e,
-  {
-    board,
-    setBoard,
-    isGameActive,
-    setIsGameActive,
-    openCell,
-    removeFlagOnBoard,
-    x,
-    y,
-  }
-) => {
+const handleClick = ({
+  board,
+  setBoard,
+  isGameActive,
+  setIsGameActive,
+  openCell,
+  removeFlagOnBoard,
+  x,
+  y,
+}) => {
   if (!isGameActive) return;
   const { isFlag, isMine } = board[x][y];
   if (isMine) {
@@ -96,7 +93,7 @@ export default function Cell({ cell, x, y }) {
       isMine={isMine}
       isFlag={isFlag}
       isOpen={isOpen}
-      onClick={(e) => handleClick(e, clickArgs)}
+      onClick={() => handleClick(clickArgs)}
       onContextMenu={(e) => handleRightClick(e, rightClickArgs)}
     >
       {cell.isOpen && cell.value ? cell.value : null}

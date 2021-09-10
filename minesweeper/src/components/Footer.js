@@ -28,13 +28,13 @@ export default function Footer() {
         <>
           <button
             type="button"
-            onClick={(e) => startNewGame(setIsInMenu, resetGameSettings)}
+            onClick={() => startNewGame(setIsInMenu, resetGameSettings)}
           >
             New Game
           </button>
           <button
             type="button"
-            onClick={(e) =>
+            onClick={() =>
               restartGame(setIsGameActive, resetGameSettings, gameSettings)
             }
           >
