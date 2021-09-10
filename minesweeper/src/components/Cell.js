@@ -19,7 +19,7 @@ const handleClick = (
   {
     board,
     setBoard,
-    setIsGameOn,
+    setIsGameActive,
     resetGameSettings,
     openCell,
     removeFlagOnBoard,
@@ -29,7 +29,7 @@ const handleClick = (
 ) => {
   const { isFlag, isMine } = board[x][y];
   if (isMine) {
-    setIsGameOn(false);
+    setIsGameActive(false);
     resetGameSettings();
     return;
   }
@@ -60,7 +60,7 @@ export default function Cell({ cell, x, y }) {
   const { isMine, isFlag, isOpen } = cell;
   const {
     setBoard,
-    setIsGameOn,
+    setIsGameActive,
     resetGameSettings,
     flagsLeft,
     removeFlagOnBoard,
@@ -72,7 +72,7 @@ export default function Cell({ cell, x, y }) {
   const clickArgs = {
     board,
     setBoard,
-    setIsGameOn,
+    setIsGameActive,
     resetGameSettings,
     openCell,
     removeFlagOnBoard,

@@ -15,17 +15,17 @@ const gameOptions = {
   },
 };
 
-const handleSubmit = (e, setIsGameOn) => {
+const handleSubmit = (e, setIsGameActive) => {
   e.preventDefault();
-  setIsGameOn(true);
+  setIsGameActive(true);
 };
 
 export default function Menu() {
-  const { gameSettings, handleSettingsChange, setIsGameOn } =
+  const { gameSettings, handleSettingsChange, setIsGameActive } =
     useContext(Context);
   const { boardSize, difficulty } = gameSettings;
   return (
-    <form onSubmit={(e) => handleSubmit(e, setIsGameOn)}>
+    <form onSubmit={(e) => handleSubmit(e, setIsGameActive)}>
       <label htmlFor="boardSize">
         Choose Board Size
         <select
