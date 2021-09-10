@@ -6,9 +6,9 @@ import { Context } from './Context';
 const StyledCell = styled.div`
   border: 1px solid grey;
   background-color: ${({ isMine, isFlag, isOpen }) =>
+    (isMine && isOpen && 'palevioletred') ||
     (isOpen && 'lightgray') ||
     (isFlag && 'green') ||
-    (isMine && 'palevioletred') ||
     'white'}; /* Changed logic here, mines will hidden */
   width: 25px;
   height: 25px;
@@ -21,6 +21,7 @@ const handleClick = ({
   setIsGameActive,
   openCell,
   removeFlagOnBoard,
+  showMines,
   x,
   y,
 }) => {
@@ -28,6 +29,7 @@ const handleClick = ({
   const { isFlag, isMine } = board[x][y];
   if (isMine) {
     setIsGameActive(false);
+    showMines(board);
     return;
   }
   if (isFlag) {
@@ -65,6 +67,7 @@ export default function Cell({ cell, x, y }) {
     placeFlagOnBoard,
     board,
     openCell,
+    showMines,
   } = useContext(Context);
 
   const clickArgs = {
@@ -74,6 +77,7 @@ export default function Cell({ cell, x, y }) {
     setIsGameActive,
     openCell,
     removeFlagOnBoard,
+    showMines,
     x,
     y,
   };

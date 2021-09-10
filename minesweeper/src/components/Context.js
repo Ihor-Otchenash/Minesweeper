@@ -187,6 +187,18 @@ function ContextProvider({ children }) {
     openAdjacentCells(currentBoard, x, y, openCell);
   };
 
+  const showMines = (currentBoard) => {
+    const boardWithOpenedMines = currentBoard.map((row) =>
+      row.map((cell) => {
+        if (cell.isMine) {
+          cell.isOpen = true;
+        }
+        return cell;
+      })
+    );
+    setBoard(boardWithOpenedMines);
+  };
+
   useEffect(() => {
     const { boardSize, difficulty: difficultyLevel } = gameSettings;
     const boardWithMines = addMinesToBoard(
@@ -218,6 +230,7 @@ function ContextProvider({ children }) {
         removeFlagOnBoard,
         handleSettingsChange,
         resetGameSettings,
+        showMines,
       }}
     >
       {children}
