@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
+import { cloneDeep } from 'lodash';
 import { Context } from './Context';
 
 const StyledCell = styled.div`
@@ -15,13 +16,16 @@ const StyledCell = styled.div`
 
 const handleClick = (
   e,
-  board,
-  setIsGameOn,
-  resetGameSettings,
-  openCell,
-  removeFlagOnBoard,
-  x,
-  y
+  {
+    board,
+    setBoard,
+    setIsGameOn,
+    resetGameSettings,
+    openCell,
+    removeFlagOnBoard,
+    x,
+    y,
+  }
 ) => {
   const { isFlag, isMine } = board[x][y];
   if (isMine) {
@@ -32,17 +36,14 @@ const handleClick = (
   if (isFlag) {
     removeFlagOnBoard(x, y);
   }
-  openCell(x, y);
+  const boardCopy = cloneDeep(board);
+  openCell(boardCopy, x, y);
+  setBoard(boardCopy);
 };
 
 const handleRightClick = (
   e,
-  board,
-  flagsLeft,
-  removeFlagOnBoard,
-  placeFlagOnBoard,
-  x,
-  y
+  { board, flagsLeft, removeFlagOnBoard, placeFlagOnBoard, x, y }
 ) => {
   e.preventDefault();
   const { isFlag, isOpen } = board[x][y];
@@ -58,6 +59,7 @@ const handleRightClick = (
 export default function Cell({ cell, x, y }) {
   const { isMine, isFlag, isOpen } = cell;
   const {
+    setBoard,
     setIsGameOn,
     resetGameSettings,
     flagsLeft,
@@ -67,36 +69,35 @@ export default function Cell({ cell, x, y }) {
     openCell,
   } = useContext(Context);
 
+  const clickArgs = {
+    board,
+    setBoard,
+    setIsGameOn,
+    resetGameSettings,
+    openCell,
+    removeFlagOnBoard,
+    x,
+    y,
+  };
+
+  const rightClickArgs = {
+    x,
+    y,
+    board,
+    flagsLeft,
+    removeFlagOnBoard,
+    placeFlagOnBoard,
+  };
+
   return (
     <StyledCell
       isMine={isMine}
       isFlag={isFlag}
       isOpen={isOpen}
-      onClick={(e) =>
-        handleClick(
-          e,
-          board,
-          setIsGameOn,
-          resetGameSettings,
-          openCell,
-          removeFlagOnBoard,
-          x,
-          y
-        )
-      }
-      onContextMenu={(e) =>
-        handleRightClick(
-          e,
-          board,
-          flagsLeft,
-          removeFlagOnBoard,
-          placeFlagOnBoard,
-          x,
-          y
-        )
-      }
+      onClick={(e) => handleClick(e, clickArgs)}
+      onContextMenu={(e) => handleRightClick(e, rightClickArgs)}
     >
-      {cell.value}
+      {cell.isOpen && cell.value ? cell.value : null}
     </StyledCell>
   );
 }

@@ -97,11 +97,47 @@ function ContextProvider({ children }) {
           ...boardWithMines[rowIndex][cellIndex],
           isMine: true,
         };
-        console.log(boardWithMines[rowIndex][cellIndex]);
+
         mines -= 1;
       }
     }
     return boardWithMines;
+  };
+
+  const countMinesAroundCell = (cellArr, x, y) => {
+    let minesAround = 0;
+    for (let dx = x - 1; dx <= x + 1; dx++) {
+      for (let dy = y - 1; dy <= y + 1; dy++) {
+        const cell = cellArr?.[dx]?.[dy];
+        if (cell && !(dx === x && dy === y)) {
+          minesAround = cellArr?.[dx]?.[dy]?.isMine
+            ? minesAround + 1
+            : minesAround;
+        }
+      }
+    }
+    return minesAround || null;
+  };
+
+  const setCellValues = (cellArr) => {
+    cellArr.forEach((row, rowIndex) =>
+      row.forEach((cell, cellIndex) => {
+        if (cell.isMine) return;
+        const minesAroundCell = countMinesAroundCell(
+          cellArr,
+          rowIndex,
+          cellIndex
+        );
+        if (minesAroundCell) {
+          cellArr[rowIndex][cellIndex] = {
+            ...cellArr[rowIndex][cellIndex],
+            value: minesAroundCell,
+          };
+        }
+        return cellArr[rowIndex][cellIndex];
+      })
+    );
+    return cellArr;
   };
 
   const resetGameSettings = () => {
@@ -126,12 +162,23 @@ function ContextProvider({ children }) {
     });
   };
 
-  const openCell = (x, y) => {
-    setBoard((prevBoard) => {
-      const modifiedBoard = [...prevBoard];
-      modifiedBoard[x][y] = { ...modifiedBoard[x][y], isOpen: true };
-      return modifiedBoard;
-    });
+  const openCell = (currentBoard, x, y) => {
+    const cell = currentBoard?.[x]?.[y];
+    if (!cell) return;
+    if (cell.isOpen) return;
+    if (cell.value) {
+      cell.isOpen = true;
+      return;
+    }
+    cell.isOpen = true;
+    openCell(currentBoard, x - 1, y);
+    openCell(currentBoard, x + 1, y);
+    openCell(currentBoard, x, y - 1);
+    openCell(currentBoard, x, y + 1);
+    openCell(currentBoard, x + 1, y - 1);
+    openCell(currentBoard, x + 1, y + 1);
+    openCell(currentBoard, x - 1, y - 1);
+    openCell(currentBoard, x - 1, y + 1);
   };
 
   useEffect(() => {
@@ -141,8 +188,8 @@ function ContextProvider({ children }) {
       difficultyLevel,
       createInitialBoard(boardSize)
     );
-    // setBoard(boardWithMines);
-    setBoard(testingBoard);
+    const calculatedBoard = setCellValues(boardWithMines);
+    setBoard(calculatedBoard);
     setFlagsLeft(difficultyLevel);
   }, [gameSettings]);
 
