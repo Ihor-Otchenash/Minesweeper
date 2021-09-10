@@ -66,6 +66,9 @@ function ContextProvider({ children }) {
   const { difficulty } = gameSettings;
 
   const [isGameActive, setIsGameActive] = useState(false);
+  const [isWon, setIsWon] = useState(false);
+  const [isLost, setIsLost] = useState(false);
+  const [isInMenu, setIsInMenu] = useState(true);
   const [flagsLeft, setFlagsLeft] = useState(difficulty);
 
   const createInitialBoard = (size) => {
@@ -204,6 +207,8 @@ function ContextProvider({ children }) {
         setBoard,
         openCell,
         isGameActive,
+        isInMenu,
+        setIsInMenu,
         setIsGameActive,
         gameSettings,
         flagsLeft,

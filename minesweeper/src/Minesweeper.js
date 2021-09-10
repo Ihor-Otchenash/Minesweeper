@@ -9,8 +9,7 @@ import { Context } from './components/Context';
 const StyledMainContainer = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: ${({ isGameActive }) =>
-    isGameActive ? 'space-between' : 'center'};
+  justify-content: ${({ isInMenu }) => (isInMenu ? 'center' : 'space-between')};
   align-items: center;
   background-color: lightblue;
   font-size: 1rem;
@@ -18,17 +17,17 @@ const StyledMainContainer = styled.div`
 `;
 
 export default function Minesweeper() {
-  const { isGameActive } = useContext(Context);
+  const { isInMenu } = useContext(Context);
   return (
-    <StyledMainContainer isGameActive={isGameActive} className="Minesweeper">
-      {isGameActive ? (
+    <StyledMainContainer isInMenu={isInMenu} className="Minesweeper">
+      {isInMenu ? (
+        <Menu />
+      ) : (
         <>
           <Header />
           <Board />
           <Footer />
         </>
-      ) : (
-        <Menu />
       )}
     </StyledMainContainer>
   );

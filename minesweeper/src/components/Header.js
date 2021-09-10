@@ -10,13 +10,15 @@ const StyledHeader = styled.div`
 `;
 
 export default function Header() {
-  const { setIsGameActive, flagsLeft, resetGameSettings } = useContext(Context);
+  const { setIsGameActive, flagsLeft, resetGameSettings, setIsInMenu } =
+    useContext(Context);
   return (
     <StyledHeader>
       <button
         type="submit"
         onClick={() => {
           setIsGameActive(false);
+          setIsInMenu(true);
           resetGameSettings();
         }}
       >
