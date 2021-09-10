@@ -67,7 +67,6 @@ function ContextProvider({ children }) {
 
   const [isGameActive, setIsGameActive] = useState(false);
   const [isWon, setIsWon] = useState(false);
-  const [isLost, setIsLost] = useState(false);
   const [isInMenu, setIsInMenu] = useState(true);
   const [flagsLeft, setFlagsLeft] = useState(difficulty);
 
@@ -143,8 +142,8 @@ function ContextProvider({ children }) {
     return cellArr;
   };
 
-  const resetGameSettings = () => {
-    setGameSettings(defaultGameSettings);
+  const resetGameSettings = (settings = defaultGameSettings) => {
+    setGameSettings(settings);
   };
 
   const placeFlagOnBoard = (x, y) => {
@@ -206,6 +205,8 @@ function ContextProvider({ children }) {
         board,
         setBoard,
         openCell,
+        isWon,
+        setIsWon,
         isGameActive,
         isInMenu,
         setIsInMenu,

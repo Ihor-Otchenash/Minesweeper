@@ -19,18 +19,18 @@ const handleClick = (
   {
     board,
     setBoard,
+    isGameActive,
     setIsGameActive,
-    resetGameSettings,
     openCell,
     removeFlagOnBoard,
     x,
     y,
   }
 ) => {
+  if (!isGameActive) return;
   const { isFlag, isMine } = board[x][y];
   if (isMine) {
     setIsGameActive(false);
-    resetGameSettings();
     return;
   }
   if (isFlag) {
@@ -43,9 +43,10 @@ const handleClick = (
 
 const handleRightClick = (
   e,
-  { board, flagsLeft, removeFlagOnBoard, placeFlagOnBoard, x, y }
+  { isGameActive, board, flagsLeft, removeFlagOnBoard, placeFlagOnBoard, x, y }
 ) => {
   e.preventDefault();
+  if (!isGameActive) return;
   const { isFlag, isOpen } = board[x][y];
   if (isFlag) {
     removeFlagOnBoard(x, y);
@@ -59,9 +60,9 @@ const handleRightClick = (
 export default function Cell({ cell, x, y }) {
   const { isMine, isFlag, isOpen } = cell;
   const {
+    isGameActive,
     setBoard,
     setIsGameActive,
-    resetGameSettings,
     flagsLeft,
     removeFlagOnBoard,
     placeFlagOnBoard,
@@ -70,10 +71,10 @@ export default function Cell({ cell, x, y }) {
   } = useContext(Context);
 
   const clickArgs = {
+    isGameActive,
     board,
     setBoard,
     setIsGameActive,
-    resetGameSettings,
     openCell,
     removeFlagOnBoard,
     x,
@@ -83,6 +84,7 @@ export default function Cell({ cell, x, y }) {
   const rightClickArgs = {
     x,
     y,
+    isGameActive,
     board,
     flagsLeft,
     removeFlagOnBoard,

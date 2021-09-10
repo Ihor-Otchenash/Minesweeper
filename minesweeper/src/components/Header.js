@@ -9,21 +9,47 @@ const StyledHeader = styled.div`
   justify-content: space-between;
 `;
 
+const handleClick = (
+  setIsGameActive,
+  setIsInMenu,
+  gameSettings,
+  resetGameSettings
+) => {
+  setIsGameActive(false);
+  setIsInMenu(true);
+  const sameGameSettings = { ...gameSettings };
+  resetGameSettings(sameGameSettings);
+};
+
 export default function Header() {
-  const { setIsGameActive, flagsLeft, resetGameSettings, setIsInMenu } =
-    useContext(Context);
+  const {
+    isGameActive,
+    isWon,
+    gameSettings,
+    setIsGameActive,
+    flagsLeft,
+    resetGameSettings,
+    setIsInMenu,
+  } = useContext(Context);
   return (
     <StyledHeader>
       <button
-        type="submit"
-        onClick={() => {
-          setIsGameActive(false);
-          setIsInMenu(true);
-          resetGameSettings();
-        }}
+        type="button"
+        onClick={() =>
+          handleClick(
+            setIsGameActive,
+            setIsInMenu,
+            gameSettings,
+            resetGameSettings
+          )
+        }
       >
         Back
       </button>
+      <h3>
+        {(!isGameActive && isWon && 'You won!') ||
+          (!isGameActive && 'You lost')}
+      </h3>
       <p>Flags left: {flagsLeft}</p>
     </StyledHeader>
   );
