@@ -220,7 +220,8 @@ function ContextProvider({ children }) {
       (outterAcc, row) =>
         outterAcc +
         row.reduce(
-          (innerAcc, cell) => (cell.isOpen ? innerAcc + 1 : innerAcc),
+          (innerAcc, cell) =>
+            cell.isOpen && !cell.isMine ? innerAcc + 1 : innerAcc,
           0
         ),
       0
