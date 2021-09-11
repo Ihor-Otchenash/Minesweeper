@@ -6,7 +6,8 @@ const StyledHeader = styled.div`
   width: 100%;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: ${({ isGameActive }) =>
+    isGameActive ? 'space-between' : 'center'};
 `;
 
 const handleClick = (
@@ -32,25 +33,30 @@ export default function Header() {
     setIsInMenu,
   } = useContext(Context);
   return (
-    <StyledHeader>
-      <button
-        type="button"
-        onClick={() =>
-          handleClick(
-            setIsGameActive,
-            setIsInMenu,
-            gameSettings,
-            resetGameSettings
-          )
-        }
-      >
-        Back
-      </button>
-      <h3>
-        {(!isGameActive && isWon && 'You won!') ||
-          (!isGameActive && 'You lost')}
-      </h3>
-      <p>Flags left: {flagsLeft}</p>
+    <StyledHeader isGameActive={isGameActive}>
+      {isGameActive ? (
+        <>
+          <button
+            type="button"
+            onClick={() =>
+              handleClick(
+                setIsGameActive,
+                setIsInMenu,
+                gameSettings,
+                resetGameSettings
+              )
+            }
+          >
+            Back
+          </button>
+          <p>Flags left: {flagsLeft}</p>
+        </>
+      ) : (
+        <h3>
+          {(!isGameActive && isWon && 'You won!') ||
+            (!isGameActive && 'You lost')}
+        </h3>
+      )}
     </StyledHeader>
   );
 }

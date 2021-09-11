@@ -9,7 +9,7 @@ const StyledCell = styled.div`
     (isMine && isOpen && 'palevioletred') ||
     (isOpen && 'lightgray') ||
     (isFlag && 'green') ||
-    'white'}; /* Changed logic here, mines will hidden */
+    'white'};
   width: 25px;
   height: 25px;
 `;

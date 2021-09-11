@@ -4,14 +4,14 @@ import { Context } from './Context';
 
 const gameOptions = {
   boardSize: {
-    Small: '8',
-    Medium: '10',
-    Big: '12',
+    Small: '9',
+    Medium: '15',
+    Big: '20',
   },
   difficulty: {
-    Easy: '5',
-    Moderate: '10',
-    Hard: '15',
+    Easy: '10',
+    Moderate: '20',
+    Hard: '40',
   },
 };
 

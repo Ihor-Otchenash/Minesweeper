@@ -63,7 +63,8 @@ function ContextProvider({ children }) {
 
   const { gameSettings, setGameSettings, handleSettingsChange } =
     useSettings(defaultGameSettings);
-  const { difficulty } = gameSettings;
+  const { boardSize, difficulty } = gameSettings;
+  const totalCellsAmount = boardSize * boardSize - difficulty;
 
   const [isGameActive, setIsGameActive] = useState(false);
   const [isWon, setIsWon] = useState(false);
@@ -144,6 +145,7 @@ function ContextProvider({ children }) {
 
   const resetGameSettings = (settings = defaultGameSettings) => {
     setGameSettings(settings);
+    setIsWon(false);
   };
 
   const placeFlagOnBoard = (x, y) => {
@@ -199,16 +201,54 @@ function ContextProvider({ children }) {
     setBoard(boardWithOpenedMines);
   };
 
+  const markMinesAsFlag = (currentBoard) => {
+    const boardFlagsInsteadOfMines = currentBoard.map((row) =>
+      row.map((cell) => {
+        if (cell.isMine) {
+          cell.isFlag = true;
+        }
+        return cell;
+      })
+    );
+    setBoard(boardFlagsInsteadOfMines);
+  };
+
+  const checkIfWon = (currentBoard, totalAmountOfCells, win, setGameActive) => {
+    // If better performance is needed -> implement a counter in state
+    // and increment / decrement it here instead of this loop
+    const currentlyOpenedCellsAmount = currentBoard.reduce(
+      (outterAcc, row) =>
+        outterAcc +
+        row.reduce(
+          (innerAcc, cell) => (cell.isOpen ? innerAcc + 1 : innerAcc),
+          0
+        ),
+      0
+    );
+
+    if (currentlyOpenedCellsAmount === totalAmountOfCells) {
+      win(true);
+      setGameActive(false);
+    }
+  };
+
   useEffect(() => {
-    const { boardSize, difficulty: difficultyLevel } = gameSettings;
+    checkIfWon(board, totalCellsAmount, setIsWon, setIsGameActive);
+  }, [board]);
+
+  useEffect(() => {
+    markMinesAsFlag(board);
+  }, [isWon]);
+
+  useEffect(() => {
     const boardWithMines = addMinesToBoard(
       boardSize,
-      difficultyLevel,
+      difficulty,
       createInitialBoard(boardSize)
     );
     const calculatedBoard = setCellValues(boardWithMines);
     setBoard(calculatedBoard);
-    setFlagsLeft(difficultyLevel);
+    setFlagsLeft(difficulty);
   }, [gameSettings]);
 
   return (
