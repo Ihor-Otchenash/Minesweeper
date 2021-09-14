@@ -4,56 +4,6 @@ import useSettings from '../helpers/useSettings';
 const Context = createContext();
 
 function ContextProvider({ children }) {
-  const testingBoard = [
-    [
-      { isFlag: false, isMine: true, isOpen: false, value: null },
-      { isFlag: false, isMine: false, isOpen: false, value: null },
-      { isFlag: false, isMine: false, isOpen: false, value: null },
-      { isFlag: false, isMine: false, isOpen: false, value: null },
-      { isFlag: false, isMine: false, isOpen: false, value: null },
-      { isFlag: false, isMine: false, isOpen: false, value: null },
-    ],
-    [
-      { isFlag: false, isMine: false, isOpen: false, value: null },
-      { isFlag: false, isMine: false, isOpen: false, value: null },
-      { isFlag: false, isMine: false, isOpen: false, value: null },
-      { isFlag: false, isMine: false, isOpen: false, value: null },
-      { isFlag: false, isMine: false, isOpen: false, value: null },
-      { isFlag: false, isMine: false, isOpen: false, value: null },
-    ],
-    [
-      { isFlag: false, isMine: false, isOpen: false, value: null },
-      { isFlag: false, isMine: false, isOpen: false, value: null },
-      { isFlag: false, isMine: false, isOpen: false, value: null },
-      { isFlag: false, isMine: false, isOpen: false, value: null },
-      { isFlag: false, isMine: false, isOpen: false, value: null },
-      { isFlag: false, isMine: false, isOpen: false, value: null },
-    ],
-    [
-      { isFlag: false, isMine: false, isOpen: false, value: null },
-      { isFlag: false, isMine: false, isOpen: false, value: null },
-      { isFlag: false, isMine: false, isOpen: false, value: null },
-      { isFlag: false, isMine: false, isOpen: false, value: null },
-      { isFlag: false, isMine: true, isOpen: false, value: null },
-      { isFlag: false, isMine: false, isOpen: false, value: null },
-    ],
-    [
-      { isFlag: false, isMine: false, isOpen: false, value: null },
-      { isFlag: false, isMine: false, isOpen: false, value: null },
-      { isFlag: false, isMine: false, isOpen: false, value: null },
-      { isFlag: false, isMine: true, isOpen: false, value: null },
-      { isFlag: false, isMine: false, isOpen: false, value: null },
-      { isFlag: false, isMine: false, isOpen: false, value: null },
-    ],
-    [
-      { isFlag: false, isMine: false, isOpen: false, value: null },
-      { isFlag: false, isMine: false, isOpen: false, value: null },
-      { isFlag: false, isMine: false, isOpen: false, value: null },
-      { isFlag: false, isMine: false, isOpen: false, value: null },
-      { isFlag: false, isMine: true, isOpen: false, value: null },
-      { isFlag: false, isMine: true, isOpen: false, value: null },
-    ],
-  ];
   const [board, setBoard] = useState([]);
 
   const defaultGameSettings = {
@@ -177,15 +127,24 @@ function ContextProvider({ children }) {
     }
   };
 
+  const removeFlagFromCell = (cell) => {
+    if (cell.isFlag) {
+      cell.isFlag = false;
+      setFlagsLeft(flagsLeft + 1);
+    }
+  };
+
   const openCell = (currentBoard, x, y) => {
     const cell = currentBoard?.[x]?.[y];
     if (!cell) return;
     if (cell.isOpen) return;
     if (cell.value) {
       cell.isOpen = true;
+      removeFlagFromCell(cell);
       return;
     }
     cell.isOpen = true;
+    removeFlagFromCell(cell);
     openAdjacentCells(currentBoard, x, y, openCell);
   };
 
