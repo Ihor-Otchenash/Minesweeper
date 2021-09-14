@@ -99,7 +99,6 @@ function ContextProvider({ children }) {
   };
 
   const placeFlagOnBoard = (x, y) => {
-    setFlagsLeft((prevState) => prevState - 1);
     setBoard((prevBoard) => {
       const modifiedBoard = [...prevBoard];
       modifiedBoard[x][y] = { ...modifiedBoard[x][y], isFlag: true };
@@ -108,12 +107,24 @@ function ContextProvider({ children }) {
   };
 
   const removeFlagOnBoard = (x, y) => {
-    setFlagsLeft((prevState) => prevState + 1);
     setBoard((prevBoard) => {
       const modifiedBoard = [...prevBoard];
       modifiedBoard[x][y] = { ...modifiedBoard[x][y], isFlag: false };
       return modifiedBoard;
     });
+  };
+
+  const calculateFlagsLeft = (currentBoard) => {
+    const count = currentBoard.reduce(
+      (outterAcc, row) =>
+        outterAcc +
+        row.reduce(
+          (innerAcc, cell) => (cell.isFlag ? innerAcc + 1 : innerAcc),
+          0
+        ),
+      0
+    );
+    setFlagsLeft(difficulty - count);
   };
 
   const openAdjacentCells = (cellArr, x, y, open) => {
@@ -127,10 +138,9 @@ function ContextProvider({ children }) {
     }
   };
 
-  const removeFlagFromCell = (cell) => {
+  const unflagCell = (cell) => {
     if (cell.isFlag) {
       cell.isFlag = false;
-      setFlagsLeft(flagsLeft + 1);
     }
   };
 
@@ -140,11 +150,11 @@ function ContextProvider({ children }) {
     if (cell.isOpen) return;
     if (cell.value) {
       cell.isOpen = true;
-      removeFlagFromCell(cell);
+      unflagCell(cell);
       return;
     }
     cell.isOpen = true;
-    removeFlagFromCell(cell);
+    unflagCell(cell);
     openAdjacentCells(currentBoard, x, y, openCell);
   };
 
@@ -193,6 +203,7 @@ function ContextProvider({ children }) {
   };
 
   useEffect(() => {
+    calculateFlagsLeft(board);
     checkIfWon(board, totalCellsAmount, setIsWon, setIsGameActive);
   }, [board]);
 
@@ -225,7 +236,6 @@ function ContextProvider({ children }) {
         setIsGameActive,
         gameSettings,
         flagsLeft,
-        setFlagsLeft,
         placeFlagOnBoard,
         removeFlagOnBoard,
         handleSettingsChange,
