@@ -7,8 +7,8 @@ function ContextProvider({ children }) {
   const [board, setBoard] = useState([]);
 
   const defaultGameSettings = {
-    boardSize: 10,
-    difficulty: 10,
+    boardSize: 14,
+    difficulty: 20,
   };
 
   const { gameSettings, setGameSettings, handleSettingsChange } =

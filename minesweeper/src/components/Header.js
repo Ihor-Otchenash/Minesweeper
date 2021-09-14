@@ -8,6 +8,20 @@ const StyledHeader = styled.div`
   flex-direction: row;
   justify-content: ${({ isGameActive }) =>
     isGameActive ? 'space-between' : 'center'};
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+  height: 4rem;
+  padding: 1rem;
+
+  button {
+    display: block;
+    font-size: 1.75rem;
+    cursor: pointer;
+    border: none;
+    color: #ffffff;
+    outline: none;
+    background: none;
+  }
 `;
 
 const handleClick = (
@@ -36,25 +50,28 @@ export default function Header() {
     <StyledHeader isGameActive={isGameActive}>
       {isGameActive ? (
         <>
-          <button
-            type="button"
-            onClick={() =>
-              handleClick(
-                setIsGameActive,
-                setIsInMenu,
-                gameSettings,
-                resetGameSettings
-              )
-            }
-          >
-            Back
-          </button>
-          <p>Flags left: {flagsLeft}</p>
+          <div>
+            <button
+              className="left"
+              type="button"
+              onClick={() =>
+                handleClick(
+                  setIsGameActive,
+                  setIsInMenu,
+                  gameSettings,
+                  resetGameSettings
+                )
+              }
+            >
+              ←
+            </button>
+          </div>
+          <p className="right">Flags left: {flagsLeft}</p>
         </>
       ) : (
         <h3>
           {(!isGameActive && isWon && 'You won!') ||
-            (!isGameActive && 'You lost')}
+            (!isGameActive && 'You lost :(')}
         </h3>
       )}
     </StyledHeader>
