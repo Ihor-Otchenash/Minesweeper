@@ -3,19 +3,6 @@ import StyledMenu from '../styles/StyledMenu';
 
 import { Context } from './Context';
 
-const gameOptions = {
-  boardSize: {
-    Small: '10',
-    Medium: '14',
-    Big: '18',
-  },
-  difficulty: {
-    Easy: '10',
-    Moderate: '20',
-    Hard: '40',
-  },
-};
-
 const handleSubmit = (e, setIsGameActive, setIsInMenu) => {
   e.preventDefault();
   setIsGameActive(true);
@@ -23,8 +10,13 @@ const handleSubmit = (e, setIsGameActive, setIsInMenu) => {
 };
 
 export default function Menu() {
-  const { gameSettings, handleSettingsChange, setIsGameActive, setIsInMenu } =
-    useContext(Context);
+  const {
+    gameSettings,
+    gameOptions,
+    handleSettingsChange,
+    setIsGameActive,
+    setIsInMenu,
+  } = useContext(Context);
   const { boardSize, difficulty } = gameSettings;
   return (
     <StyledMenu>

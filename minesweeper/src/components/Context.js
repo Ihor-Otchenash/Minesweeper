@@ -5,18 +5,33 @@ import useSettings from '../helpers/useSettings';
 const Context = createContext();
 
 function ContextProvider({ children }) {
-  const [board, setBoard] = useState([]);
-
-  const defaultGameSettings = {
-    boardSize: 14,
-    difficulty: 20,
+  const gameOptions = {
+    boardSize: {
+      Small: '10',
+      Medium: '14',
+      Big: '18',
+    },
+    difficulty: {
+      Easy: '10',
+      Moderate: '20',
+      Hard: '40',
+    },
   };
 
+  // Default settings are usually Medium size / Medium difficulty
+  const defaultGameSettings = {
+    boardSize: gameOptions.boardSize.Medium,
+    difficulty: gameOptions.difficulty.Moderate,
+  };
+
+  // Gets the current game settings, grabs state change methods
   const { gameSettings, setGameSettings, handleSettingsChange } =
     useSettings(defaultGameSettings);
   const { boardSize, difficulty } = gameSettings;
   const totalCellsAmount = boardSize * boardSize - difficulty;
 
+  // Defining required app states
+  const [board, setBoard] = useState([]);
   const [isGameActive, setIsGameActive] = useState(false);
   const [isWon, setIsWon] = useState(false);
   const [isInMenu, setIsInMenu] = useState(true);
@@ -73,6 +88,8 @@ function ContextProvider({ children }) {
     return minesAround || null;
   };
 
+  // This function calculates the amount of mines around
+  // Sets the corresponding amount to cell value
   const setCellValues = (cellArr) => {
     cellArr.forEach((row, rowIndex) =>
       row.forEach((cell, cellIndex) => {
@@ -94,6 +111,7 @@ function ContextProvider({ children }) {
     return cellArr;
   };
 
+  // Reset gameSettings to custom settings or default ones
   const resetGameSettings = (settings = defaultGameSettings) => {
     setGameSettings(settings);
     setIsWon(false);
@@ -128,6 +146,7 @@ function ContextProvider({ children }) {
     setFlagsLeft(difficulty - count);
   };
 
+  // Opens all the cells around currenly opened cell
   const openAdjacentCells = (cellArr, x, y, open) => {
     for (let dx = x - 1; dx <= x + 1; dx++) {
       for (let dy = y - 1; dy <= y + 1; dy++) {
@@ -139,6 +158,7 @@ function ContextProvider({ children }) {
     }
   };
 
+  // Removes flag mark from cell in a naive way
   const unflagCell = (cell) => {
     if (cell.isFlag) {
       cell.isFlag = false;
@@ -159,6 +179,7 @@ function ContextProvider({ children }) {
     openAdjacentCells(currentBoard, x, y, openCell);
   };
 
+  // Opens all the mines on board
   const showMines = (currentBoard) => {
     const boardWithOpenedMines = currentBoard.map((row) =>
       row.map((cell) => {
@@ -203,15 +224,19 @@ function ContextProvider({ children }) {
     }
   };
 
+  // As soon as the board was changed (cell opened etc)
+  // Check how many flags left and the status of the game
   useEffect(() => {
     calculateFlagsLeft(board);
     checkIfWon(board, totalCellsAmount, setIsWon, setIsGameActive);
   }, [board]);
 
+  // If won a game -> show where mines were
   useEffect(() => {
     markMinesAsFlag(board);
   }, [isWon]);
 
+  // Create a new board when gameSettings are changed
   useEffect(() => {
     const boardWithMines = addMinesToBoard(
       boardSize,
@@ -228,6 +253,7 @@ function ContextProvider({ children }) {
       value={{
         board,
         setBoard,
+        gameOptions,
         openCell,
         isWon,
         setIsWon,
