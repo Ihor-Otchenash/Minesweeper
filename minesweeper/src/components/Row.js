@@ -1,11 +1,11 @@
 import React from 'react';
-import styled from 'styled-components';
-
-const StyledRow = styled.div`
-  display: flex;
-  justify-content: center;
-`;
+import PropTypes from 'prop-types';
+import StyledRow from '../styles/StyledRow';
 
 export default function Row({ children }) {
   return <StyledRow>{children}</StyledRow>;
 }
+
+Row.propTypes = {
+  children: PropTypes.object,
+};

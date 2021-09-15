@@ -1,4 +1,5 @@
 import React, { useState, createContext, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import useSettings from '../helpers/useSettings';
 
 const Context = createContext();
@@ -249,3 +250,7 @@ function ContextProvider({ children }) {
 }
 
 export { Context, ContextProvider };
+
+ContextProvider.propTypes = {
+  children: PropTypes.object,
+};
